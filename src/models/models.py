@@ -21,7 +21,7 @@ class Product(BaseModel):
 
 class Order(BaseModel):
     id: Optional[str] = None
-    user: Usuario
+    user: User
     product: Product
     quantiry: int
     status: bool = True
