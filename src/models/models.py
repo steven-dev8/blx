@@ -17,3 +17,13 @@ class Product(BaseModel):
     description: str
     price: float
     avaliable: bool = False
+
+
+class Order(BaseModel):
+    id: Optional[str] = None
+    user: Usuario
+    product: Product
+    quantiry: int
+    status: bool = True
+    address: str
+    obs: Optional[str] = "No observation"
