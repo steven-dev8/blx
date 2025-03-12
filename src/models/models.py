@@ -23,7 +23,7 @@ class Order(BaseModel):
     id: Optional[str] = None
     user: User
     product: Product
-    quantiry: int
+    quantity: int
     status: bool = True
     address: str
     obs: Optional[str] = "No observation"
