@@ -8,3 +8,12 @@ class User(BaseModel):
     number: str
     my_product = List[Product]
     my_orders = List[Order]
+
+
+class Product(BaseModel):
+    id: Optional[str] = None
+    user: User
+    name: str
+    description: str
+    price: float
+    avaliable: bool = False
