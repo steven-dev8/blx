@@ -37,6 +37,7 @@ def del_product(id_prd: int, db: Session = Depends(get_db)):
         return result
     return Response(status_code=status.HTTP_404_NOT_FOUND, content="ID product not found")
 
+
 @app.post('/user', status_code=status.HTTP_201_CREATED)
 def add_user(user: User, db: Session = Depends(get_db)):
     user_db = ProcessUser(db).create(user)
@@ -60,3 +61,11 @@ def query_user(id_user: int, db: Session = Depends(get_db)):
     if result_user:
         return result_user
     return Response(status_code=status.HTTP_404_NOT_FOUND, content='ID not found.')
+
+
+@app.delete('/user/{id_user}')
+def del_user(id_user: int, db: Session = Depends(get_db)):
+    result = ProcessUser(db).delete_user(id_user)
+    if result:
+        return result
+    return Response(status_code=status.HTTP_200_OK, content="ID not found")

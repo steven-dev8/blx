@@ -33,3 +33,12 @@ class ProcessUser:
         user = UserResponse(id=result_user[0], name=result_user[1], number=result_user[2])
         print(user)
         return user
+    
+
+    def delete_user(self, id_user: int):
+        query = self.db.query(models.User).filter(models.User.id == id_user).first()
+        if query:
+            self.db.delete(query)
+            self.db.commit()
+            return {"message": f"The user {query.id} has been deleted"}
+        return False
