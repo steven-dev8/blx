@@ -10,6 +10,7 @@ class ProcessProduct:
     
     def create(self, product: Product):
         db_product = models.Product(id=product.id,
+                                    user_id=product.user_id,
                                     name=product.name,
                                     description=product.description,
                                     price=product.price,
@@ -24,3 +25,8 @@ class ProcessProduct:
     def to_list(self):
         products = self.db.query(models.Product).all()
         return products 
+
+    
+    def search(self, id_query):
+        result = self.db.query(models.Product).filter(models.Product.id == id_query).first()
+        return result
