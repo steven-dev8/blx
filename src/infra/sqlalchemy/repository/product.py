@@ -30,3 +30,12 @@ class ProcessProduct:
     def search(self, id_query):
         result = self.db.query(models.Product).filter(models.Product.id == id_query).first()
         return result
+
+    
+    def delete_product(self, id_prd: int):
+        query = self.db.query(models.Product).filter(models.Product.id == id_prd).first()
+        if query:
+            self.db.delete(query)
+            self.db.commit()
+            return f'The product {query.name} has been deleted'
+        return False
