@@ -20,20 +20,27 @@ class UserResponse(BaseModel):
         from_attributes = True
 
 
+class UserProduct(BaseModel):
+    id: int
+    name: str
+    products: List["Product"]
+
+
 class Product(BaseModel):
-    id: Optional[str] = None
-    user_id: int
+    id: Optional[int] = None
     name: str
     description: str
     price: float
     avaliable: bool = False
+    user_id: int
+
 
     class Config:
         from_attributes = True
 
 
 class Order(BaseModel):
-    id: Optional[str] = None
+    id: Optional[str]
     quantity: int
     status: bool = True
     address: str
