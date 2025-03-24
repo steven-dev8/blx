@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from typing import List
-from src.schema.schemas import User, UserResponse
+from src.schema.schemas import User, UserResponse, UserProduct
 from src.infra.sqlalchemy.models import models
 
 class ProcessUser:
@@ -31,7 +31,6 @@ class ProcessUser:
             models.User.id == id_user
         ).first()
         user = UserResponse(id=result_user[0], name=result_user[1], number=result_user[2])
-        print(user)
         return user
     
 
@@ -42,3 +41,10 @@ class ProcessUser:
             self.db.commit()
             return {"message": f"The user {query.id} has been deleted"}
         return False
+    
+
+    def user_product(self, id_user: int):
+        prd_query = self.db.query(models.Product).filter(models.Product.user_id == id_user).all()
+        user_query = self.db.query(models.User.id, models.User.name).filter(models.User.id == id_user).first()
+        formate = UserProduct(id=user_query[0], name=user_query[1], products=prd_query)
+        return formate
