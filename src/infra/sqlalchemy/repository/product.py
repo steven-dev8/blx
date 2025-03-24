@@ -1,41 +1,40 @@
 from sqlalchemy.orm import Session
-from src.schema.schemas import Product
+from src.schema.schemas import Product #ProductResponse
 from src.infra.sqlalchemy.models import models
 
 
 class ProcessProduct:
-    def __init__(self, db: Session):
-        self.db = db
+    def __init__(self, session: Session):
+        self.session = session
     
     
     def create(self, product: Product):
-        db_product = models.Product(id=product.id,
-                                    user_id=product.user_id,
-                                    name=product.name,
+        db_product = models.Product(name=product.name,
                                     description=product.description,
                                     price=product.price,
-                                    avaliable=product.avaliable)
+                                    avaliable=product.avaliable,
+                                    user_id=product.user_id)
         
-        self.db.add(db_product)
-        self.db.commit()
-        self.db.refresh(db_product)
+        self.session.add(db_product)
+        self.session.commit()
+        self.session.refresh(db_product)
         return db_product
     
     
     def to_list(self):
-        products = self.db.query(models.Product).all()
+        products = self.session.query(models.Product).all()
         return products 
 
     
     def search(self, id_query):
-        result = self.db.query(models.Product).filter(models.Product.id == id_query).first()
+        result = self.session.query(models.Product).filter(models.Product.id == id_query).first()
         return result
 
     
     def delete_product(self, id_prd: int):
-        query = self.db.query(models.Product).filter(models.Product.id == id_prd).first()
+        query = self.session.query(models.Product).filter(models.Product.id == id_prd).first()
         if query:
-            self.db.delete(query)
-            self.db.commit()
+            self.session.delete(query)
+            self.session.commit()
             return f'The product {query.name} has been deleted'
         return False
