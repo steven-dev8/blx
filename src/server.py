@@ -77,3 +77,9 @@ def search_user_product(id_user: str, db: Session = Depends(get_db)):
     print('aqui')
     result = ProcessUser(db).user_product(id_user)
     return result
+
+
+@app.put('/user/edit')
+def edit_user(user: User, db: Session = Depends(get_db)):
+    result = ProcessUser(db).edit_user(user)
+    return result

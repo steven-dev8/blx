@@ -48,3 +48,15 @@ class ProcessUser:
         user_query = self.db.query(models.User.id, models.User.name).filter(models.User.id == id_user).first()
         formate = UserProduct(id=user_query[0], name=user_query[1], products=prd_query)
         return formate
+    
+
+    def edit_user(self, user: User):
+        user_query = self.db.query(models.User).filter(models.User.id == user.id).first()
+        if user_query:
+            user_query.name = user.name
+            user_query.number = user.number
+            user_query.password = user.password
+            self.db.commit()
+            self.db.refresh(user_query)
+            return UserResponse(id=user_query.id, name=user_query.name, number=user_query.number)
+        
