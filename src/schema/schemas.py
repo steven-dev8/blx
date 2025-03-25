@@ -2,7 +2,7 @@ from typing import Optional, List
 from pydantic import BaseModel
 
 class User(BaseModel):
-    id: int
+    id: Optional[int] = None
     name: str
     password: str
     number: str
@@ -37,6 +37,13 @@ class Product(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ProductEdit(BaseModel):
+    name: str
+    description: str
+    price: float
+    avaliable: bool = False
 
 
 class Order(BaseModel):
