@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, status, Response
 from sqlalchemy.orm import Session
 from typing import List
 from src.infra.sqlalchemy.config.database import get_db, create_session_db
-from src.schema.schemas import Product, User, UserResponse
+from src.schema.schemas import Product, User, UserResponse, ProductEdit
 from src.infra.sqlalchemy.repository.product import ProcessProduct
 from src.infra.sqlalchemy.repository.user import ProcessUser
 
@@ -32,6 +32,12 @@ def query_product(id_query: int, db: Session = Depends(get_db)):
     return Response(status_code=status.HTTP_404_NOT_FOUND, content='ID not found.')
 
 
+@app.put('/product/{id_prod}')
+def edit_product(id_prod: int, product: ProductEdit, db: Session = Depends(get_db)):
+    result = ProcessProduct(db).edit_product(id_prod, product)
+    return result
+
+
 @app.delete('/product/{id_prd}', status_code=status.HTTP_200_OK)
 def del_product(id_prd: int, db: Session = Depends(get_db)):
     result = ProcessProduct(db).delete_product(id_prd)
@@ -39,6 +45,8 @@ def del_product(id_prd: int, db: Session = Depends(get_db)):
         return result
     return Response(status_code=status.HTTP_404_NOT_FOUND, content="ID product not found")
 
+
+# USERS
 
 @app.post('/user', status_code=status.HTTP_201_CREATED, response_model=User)
 def add_user(user: User, db: Session = Depends(get_db)):
@@ -72,14 +80,14 @@ def del_user(id_user: int, db: Session = Depends(get_db)):
     return Response(status_code=status.HTTP_200_OK, content="ID not found")
 
 
-@app.get('/user/products/')
-def search_user_product(id_user: str, db: Session = Depends(get_db)):
+@app.get('/user/{id_user}/products')
+def search_user_product(id_user: int, db: Session = Depends(get_db)):
     print('aqui')
     result = ProcessUser(db).user_product(id_user)
     return result
 
 
-@app.put('/user/edit')
-def edit_user(user: User, db: Session = Depends(get_db)):
-    result = ProcessUser(db).edit_user(user)
+@app.put('/user/{id_user}')
+def edit_user(id_user: int, user: User, db: Session = Depends(get_db)):
+    result = ProcessUser(db).edit_user(id_user, user)
     return result
