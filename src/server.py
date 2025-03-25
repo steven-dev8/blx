@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, status, Response
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 from src.infra.sqlalchemy.config.database import get_db, create_session_db
@@ -6,9 +7,20 @@ from src.schema.schemas import Product, User, UserResponse, ProductEdit
 from src.infra.sqlalchemy.repository.product import ProcessProduct
 from src.infra.sqlalchemy.repository.user import ProcessUser
 
+
 create_session_db()
 
 app = FastAPI()
+
+origins = ["http://localhost",
+           "http://localhost:8080",
+           "http://localhost:8000"]
+
+app.add_middleware(CORSMiddleware,
+                   allow_origins=origins,
+                   allow_credentials=True,
+                   allow_method=["*"],
+                   allow_headers=["*"])
 
 
 @app.post('/product', status_code=status.HTTP_201_CREATED, response_model=Product)
@@ -48,7 +60,7 @@ def del_product(id_prd: int, db: Session = Depends(get_db)):
 
 # USERS
 
-@app.post('/user', status_code=status.HTTP_201_CREATED, response_model=User)
+@app.post('/user', status_code=status.HTTP_201_CREATED, response_model=UserResponse)
 def add_user(user: User, db: Session = Depends(get_db)):
     user_db = ProcessUser(db).create(user)
     if user_db:
