@@ -16,7 +16,7 @@ class ProcessUser:
         self.db.add(add_user)
         self.db.commit()
         self.db.refresh(add_user)
-        return add_user
+        return UserResponse(id=add_user.id, name=add_user.name, number=add_user.number)
 
     def to_list(self):
         user_list = self.db.query(models.User.id, models.User.name, models.User.number).all()
