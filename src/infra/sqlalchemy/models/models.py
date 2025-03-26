@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean, Text, ForeignKey, CheckConstraint
 from sqlalchemy.orm import relationship
 from src.infra.sqlalchemy.config.database import Base
-from typing import List
 
 
 class User(Base):

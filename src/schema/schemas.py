@@ -25,7 +25,8 @@ class UserResponse(UserBase):
         from_attributes=True
 
 
-class UserProduct(UserResponse):
+class UserProduct(UserBase):
+    id: int
     products: List["ProductResponse"]
 
     class Config:
@@ -33,14 +34,6 @@ class UserProduct(UserResponse):
 
 
 # PRODUCT
-
-class Product(BaseModel):
-    id: Optional[int] = None
-    name: str
-    description: str
-    price: float
-    quantity: bool = False
-    user_id: int
 
 class ProductBase(BaseModel):
     name: str
