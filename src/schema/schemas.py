@@ -1,54 +1,67 @@
 from typing import Optional, List
 from pydantic import BaseModel
 
-class User(BaseModel):
-    id: Optional[int] = None
+
+# USER
+class UserBase(BaseModel):
     name: str
+    number: str
+
+
+class UserCreate(UserBase):
+    login: str
     password: str
-    number: str
+
+
+class UserResponse(UserBase):
+    id: int
 
     class Config:
-        from_attributes = True
+        from_attributes=True
 
 
-class UserResponse(BaseModel):
-    id: int
-    name: str
-    number: str
-
-    class Config:
-        from_attributes = True
+# PRODUCT
+class UserProduct(UserBase):
+    products: List[Product]
 
 
-class UserProduct(BaseModel):
-    id: int
-    name: str
-    products: List["Product"]
-
-
-class Product(BaseModel):
-    id: Optional[int] = None
+class ProductBase(BaseModel):
     name: str
     description: str
     price: float
-    avaliable: bool = False
+    quantity: int
+
+
+class ProductCreate(ProductBase):
     user_id: int
 
 
+class ProductResponse(BaseModel):
+    id: int
+    user_id: int
+
     class Config:
-        from_attributes = True
+        from_attributes=True
 
 
-class ProductEdit(BaseModel):
-    name: str
-    description: str
-    price: float
-    avaliable: bool = False
+class ProductEdit(ProductBase):
+    pass
 
 
-class Order(BaseModel):
-    id: Optional[str]
+#ORDER
+class OrderBase(BaseModel):
     quantity: int
-    status: bool = True
+    status: bool = False
     address: str
-    obs: Optional[str] = "No observation"
+    obs: Optional[str] = "No observation."
+
+
+class OrderCreate(OrderBase):
+    pass
+
+
+class OrderResponse(OrderBase):
+    id: int
+
+    class Config:
+        from_attributes=True
