@@ -37,6 +37,9 @@ class Order(Base):
     client_id = Column(Integer, ForeignKey('user.id', name='fk_client_order'), nullable=False)
     product_id = Column(Integer, ForeignKey('product.id', name='fk_product_order'), nullable=False)
     quantity = Column(Integer, CheckConstraint('quantity > 0'), nullable=False)
+    status: Column(Boolean, default=False)
+    address = Column(String, nullable=False)
+    observation = Column(String, default='No observation.')
 
     parent_user = relationship('User', back_populates='order')
     parent_product = relationship('Product', back_populates='order')
