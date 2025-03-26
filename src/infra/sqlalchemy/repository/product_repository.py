@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from src.schema.schemas import Product, ProductEdit
+from src.schema.schemas import ProductBase, ProductCreate, ProductEdit, ProductResponse
 from src.infra.sqlalchemy.models import models
 
 
@@ -7,13 +7,18 @@ class ProcessProduct:
     def __init__(self, session: Session):
         self.session = session
     
-    def create(self, product: Product):
-        db_product = models.Product(name=product.name,
+    def create(self, product: ProductCreate):
+        db_product = models.Product(
+                                    name=product.name,
+                                    user_id=product.user_id,
                                     description=product.description,
                                     price=product.price,
-                                    avaliable=product.avaliable,
-                                    user_id=product.user_id)
+                                    quantity=product.quantity,
+                                    )
         
+        if db_product.quantity > 0:
+            db_product.avaliable=True
+
         self.session.add(db_product)
         self.session.commit()
         self.session.refresh(db_product)
@@ -23,9 +28,18 @@ class ProcessProduct:
         products = self.session.query(models.Product).all()
         return products 
 
-    def search(self, id_query):
+    def search(self, id_query: int):
         result = self.session.query(models.Product).filter(models.Product.id == id_query).first()
-        return result
+        return ProductResponse(
+                            id=result.id,
+                            user_id=result.user_id,
+                            name=result.name,
+                            description=result.description,
+                            price=result.price,
+                            quantity=result.quantity,
+                            avaliable=result.avaliable
+                            
+        )
 
     def delete_product(self, id_prd: int):
         query = self.session.query(models.Product).filter(models.Product.id == id_prd).first()
@@ -41,10 +55,17 @@ class ProcessProduct:
             query.name = product.name
             query.description = product.description
             query.price = product.price
-            query.avaliable = product.avaliable
+            query.quantity = product.quantity
+            if product.quantity > 0:
+                query.avaliable = True
             self.session.commit()
             self.session.refresh(query)
-            return ProductEdit(name=query.name,
-                               description=query.description,
-                               price=query.price,
-                               avaliable=query.avaliable)
+            return ProductResponse(
+                            id=result.id,
+                            user_id=result.user_id,
+                            name=result.name,
+                            description=result.description,
+                            price=result.price,
+                            quantity=result.quantity,
+                            avaliable=result.avaliable        
+        )
