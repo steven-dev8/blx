@@ -5,25 +5,42 @@ from pydantic import BaseModel
 # USER
 class UserBase(BaseModel):
     name: str
-    number: str
 
 
 class UserCreate(UserBase):
     login: str
     password: str
+    number: str
+
+
+class UserEdit(UserCreate):
+    pass
 
 
 class UserResponse(UserBase):
+    number: Optional[str] = None
     id: int
 
     class Config:
         from_attributes=True
 
 
-# PRODUCT
-class UserProduct(UserBase):
-    products: List[Product]
+class UserProduct(UserResponse):
+    products: List["ProductResponse"]
 
+    class Config:
+        from_attributes = True
+
+
+# PRODUCT
+
+class Product(BaseModel):
+    id: Optional[int] = None
+    name: str
+    description: str
+    price: float
+    quantity: bool = False
+    user_id: int
 
 class ProductBase(BaseModel):
     name: str
@@ -39,6 +56,7 @@ class ProductCreate(ProductBase):
 class ProductResponse(BaseModel):
     id: int
     user_id: int
+    avaliable: bool
 
     class Config:
         from_attributes=True
@@ -57,8 +75,8 @@ class OrderBase(BaseModel):
 
 
 class OrderCreate(OrderBase):
-    client_id = int
-    product_id = int
+    client_id: int
+    product_id: int
 
 class OrderResponse(OrderCreate):
     id: int
