@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
-from src.infra.sqlalchemy.repository.product import ProcessProduct
-from src.schema.schemas import Product, ProductEdit
+from src.infra.sqlalchemy.repository.product_repository import ProcessProduct
+from src.schema.schemas import ProductBase, ProductCreate, ProductEdit, ProductResponse
 from src.infra.sqlalchemy.config.database import get_db
 from typing import List, Union
 
@@ -9,15 +9,15 @@ from typing import List, Union
 router = APIRouter()
 
 
-@router.post('/product', status_code=status.HTTP_201_CREATED, response_model=Product)
-def add_product(product: Product, session: Session = Depends(get_db)):
+@router.post('/product', status_code=status.HTTP_201_CREATED, response_model=ProductCreate)
+def add_product(product: ProductCreate, session: Session = Depends(get_db)):
     prd_db = ProcessProduct(session).create(product)
     if not prd_db:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The Body has an incorrect format.")
     return prd_db
 
 
-@router.get('/product', status_code=status.HTTP_200_OK, response_model=List[Product] or ProductErro)
+@router.get('/product', status_code=status.HTTP_200_OK)
 def to_list_prds(session: Session = Depends(get_db)):
     list_prd = ProcessProduct(session).to_list()
     if not list_prd:
@@ -25,14 +25,14 @@ def to_list_prds(session: Session = Depends(get_db)):
     return list_prd
 
 
-@router.get('/product/{id_query}', status_code=status.HTTP_200_OK, response_model=Product)
+@router.get('/product/{id_query}', status_code=status.HTTP_200_OK, response_model=ProductResponse)
 def query_product(id_query: int, session: Session = Depends(get_db)):
     result = ProcessProduct(session).search(id_query)
     if not result:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"The product with ID {id_query} was not found.")
     return result
 
-@router.put('/product/{id_prod}')
+@router.put('/product/{id_prod}', status_code=status.HTTP_200_OK, response_model=ProductResponse)
 def edit_product(id_prod: int, product: ProductEdit, session: Session = Depends(get_db)):
     result = ProcessProduct(session).edit_product(id_prod, product)
     if not result:
