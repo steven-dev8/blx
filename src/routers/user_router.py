@@ -12,44 +12,34 @@ router = APIRouter()
 @router.post('/user', status_code=status.HTTP_201_CREATED, response_model=UserResponse)
 def add_user(user: UserCreate, session: Session = Depends(get_db)):
     user_db = ProcessUser(session).create(user)
-    
     return user_db
 
 
 @router.get('/user', status_code=status.HTTP_200_OK, response_model=List[UserResponse])
 def to_list_users(session: Session = Depends(get_db)):
     list_user = ProcessUser(session).to_list()
-    if not list_user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail="No users registered.")
     return list_user
+
 
 @router.get('/user/{id_user}', status_code=status.HTTP_200_OK, response_model=UserResponse)
 def query_user(id_user: int, session: Session = Depends(get_db)):
     result_user = ProcessUser(session).query_user(id_user)
-    if not result_user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"The user with ID {id_user} was not found.")
     return result_user
 
-@router.delete('/user/{id_user}', status_code=status.HTTP_200_OK)
+
+@router.delete('/user/{id_user}', status_code=status.HTTP_204_NO_CONTENT)
 def del_user(id_user: int, session: Session = Depends(get_db)):
     result = ProcessUser(session).delete_user(id_user)
-    if not result:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"The user with ID {id_user} was not found.")
-    return result
+    return None
 
-@router.get('/user/{id_user}/products')
+
+@router.get('/user/{id_user}/products', status_code=status.HTTP_200_OK, response_model=UserProduct)
 def search_user_product(id_user: int, session: Session = Depends(get_db)):
-    result = ProcessUser(session).user_product(id_user)
-    if not result:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"The user with ID {id_user} was not found.")
+    result = ProcessUser(session).user_product(id_user) 
     return result
 
-@router.put('/user/{id_user}')
+
+@router.put('/user/{id_user}', status_code=status.HTTP_204_NO_CONTENT)
 def edit_user(id_user: int, user: UserEdit, session: Session = Depends(get_db)):
     result = ProcessUser(session).edit_user(id_user, user)
-    if not result:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"The user with ID {id_user} was not found.")
     return result
