@@ -1,24 +1,39 @@
 from sqlalchemy.orm import Session
+from fastapi import HTTPException, status
 from typing import List
-from src.schema.schemas import User, UserResponse, UserProduct
+from src.schema.schemas import UserResponse, UserEdit, UserProduct, UserBase, UserCreate
 from src.infra.sqlalchemy.models import models
+from src.infra.validators.user_validators import *
+from sqlalchemy.exc import IntegrityError
 
 class ProcessUser:
     def __init__(self, session: Session):
         self.session = session
     
-    def create(self, user: User):
-        add_user = models.User(id=user.id,
-                               name=user.name,
-                               password=user.password,
-                               number=user.number)
+    def create(self, user: UserCreate):
+        if not validate_create(user):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, 
+                detail="The provided user data is invalid. Please check the input fields."
+                )
         try:
+            add_user = models.User(
+                                name=user.name,
+                                login=user.login,
+                                password=user.password,
+                                number=user.number
+                                )
             self.session.add(add_user)
             self.session.commit()
             self.session.refresh(add_user)
-            return UserResponse(id=add_user.id, name=add_user.name, number=add_user.number)
-        except Exception as e:
-            print(e)            
+        except IntegrityError:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, 
+                detail=f"Login '{user.login}' already exists."
+                )
+
+        return UserResponse(id=add_user.id, name=add_user.name, number=add_user.number)
+        
 
     def to_list(self):
         user_list = self.session.query(models.User.id, models.User.name, models.User.number).all()
@@ -42,17 +57,18 @@ class ProcessUser:
             self.session.delete(query)
             self.session.commit()
             return {"message": f"The user {query.id} has been deleted"}
-        return None
+        return query
 
     def user_product(self, id_user: int):
         prd_query = self.session.query(models.Product).filter(models.Product.user_id == id_user).all()
         user_query = self.session.query(models.User.id, models.User.name).filter(models.User.id == id_user).first()
-        if prd_query and user_query:
+        print(prd_query, user_query)
+        if user_query:
             formate = UserProduct(id=user_query[0], name=user_query[1], products=prd_query)
             return formate
         return None
 
-    def edit_user(self, id_user: int, user: User):
+    def edit_user(self, id_user: int, user: UserEdit):
         user_query = self.session.query(models.User).filter(models.User.id == id_user).first()
         if user_query:
             user_query.name = user.name
