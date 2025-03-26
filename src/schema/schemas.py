@@ -57,10 +57,10 @@ class OrderBase(BaseModel):
 
 
 class OrderCreate(OrderBase):
-    pass
+    client_id = int
+    product_id = int
 
-
-class OrderResponse(OrderBase):
+class OrderResponse(OrderCreate):
     id: int
 
     class Config:
