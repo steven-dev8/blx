@@ -34,7 +34,6 @@ class UserProduct(UserBase):
 
 
 # PRODUCT
-
 class ProductBase(BaseModel):
     name: str
     description: str
@@ -46,14 +45,18 @@ class ProductCreate(ProductBase):
     user_id: int
 
 
-class ProductResponse(BaseModel):
-    id: int
-    user_id: int
+class ProductResponse(ProductBase):
     avaliable: bool
 
     class Config:
         from_attributes=True
 
+
+class ProductList(ProductResponse):
+    id: int
+
+class ProductAll(ProductResponse, ProductCreate):
+    pass
 
 class ProductEdit(ProductBase):
     pass
@@ -70,6 +73,7 @@ class OrderBase(BaseModel):
 class OrderCreate(OrderBase):
     client_id: int
     product_id: int
+
 
 class OrderResponse(OrderCreate):
     id: int
