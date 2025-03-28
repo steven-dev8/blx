@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.infra.sqlalchemy.config.database import create_session_db
 from src.routers.product_router import router as product_router
 from src.routers.user_router import router as user_router
+from src.routers.order_router import router as order_router
 
 
 create_session_db()
@@ -21,3 +22,4 @@ app.add_middleware(CORSMiddleware,
 
 app.include_router(product_router)
 app.include_router(user_router)
+app.include_router(order_router)
