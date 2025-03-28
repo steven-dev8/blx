@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Union
 from pydantic import BaseModel
 
 
@@ -65,15 +65,17 @@ class ProductEdit(ProductBase):
 #ORDER
 class OrderBase(BaseModel):
     quantity: int
-    status: bool = False
+    status: Optional[bool] = False
     address: str
-    obs: Optional[str] = "No observation."
+    observation: Optional[str] = "No observation."
 
 
 class OrderCreate(OrderBase):
     client_id: int
     product_id: int
 
+    class Config:
+        from_attributes=True
 
 class OrderResponse(OrderCreate):
     id: int
