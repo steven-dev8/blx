@@ -18,3 +18,4 @@ def additional_check(order: OrderCreate, product: int):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="The order quantity exceeds the avaliable stock."
             )
+        

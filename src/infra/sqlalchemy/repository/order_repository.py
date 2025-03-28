@@ -31,3 +31,22 @@ class ProcessOrder:
         self.session.commit()
         self.session.refresh(new_order)
         return OrderResponse.model_validate(new_order)
+    
+    def list_order(self):
+        result = self.session.query(models.Order).all()
+        if not result:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Service is unavailable. Fix in progress."
+                )
+        
+        return OrderResponse.model_validate(result)
+
+    def search_order(self):
+        ...
+    
+    def delete_order(self):
+        ...
+    
+    def change_status(self):
+        ...
