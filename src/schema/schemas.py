@@ -82,4 +82,9 @@ class OrderResponse(OrderCreate):
 
     class Config:
         from_attributes=True
-        
+
+class OrderResponseSearch(OrderCreate):
+    id: int
+
+    class Config:
+        from_attributes=True
