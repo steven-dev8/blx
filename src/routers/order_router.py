@@ -21,14 +21,19 @@ def list_order(session: Session = Depends(get_db)):
     return result
 
 
-@router.get('/order/{id_query}', status_code=status.HTTP_200_OK, response_model=OrderResponseSearch)
-def search_order(id_query: int, session: Session = Depends(get_db)):
-    result = ProcessOrder(session).search_order(id_query)
+@router.get('/order/{id_order}', status_code=status.HTTP_200_OK, response_model=OrderResponseSearch)
+def search_order(id_order: int, session: Session = Depends(get_db)):
+    result = ProcessOrder(session).search_order(id_order)
     return result
 
 
-@router.delete('/order/{id_query}', status_code=status.HTTP_204_NO_CONTENT)
-def delete_order(id_query: int, session: Session = Depends(get_db)):
-    result = ProcessOrder(session).delete_order(id_query)
+@router.delete('/order/{id_order}', status_code=status.HTTP_204_NO_CONTENT)
+def delete_order(id_order: int, session: Session = Depends(get_db)):
+    result = ProcessOrder(session).delete_order(id_order)
     return result
 
+
+@router.patch('/order/{id_order}', status_code=status.HTTP_204_NO_CONTENT)
+def change_status(id_order: int, status: bool = False, session: Session = Depend(get_db)):
+    result = ProcessOrder(session).change_status(id_order, status)
+    return result
