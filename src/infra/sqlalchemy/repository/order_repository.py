@@ -17,14 +17,16 @@ class ProcessOrder:
                 detail=f"The user with ID {order.client_id} was not found."
                 )
         
-        product = self.session.query(models.Product.quantity).filter(models.Product.id == order.product_id).scalar()
+        product = self.session.query(models.Product).filter(models.Product.id == order.product_id).scalar()
         if not product:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"The product with ID {order.product_id} was not found."
             )
-        print(order.dict())
-        validator.additional_check(order, product)
+            
+        if validator.additional_check(order, product.quantity):
+            product.quantity = product.quantity - order.quantity
+
         new_order = models.Order(**order.dict())
         
         self.session.add(new_order)
@@ -40,7 +42,7 @@ class ProcessOrder:
                 detail="Service is unavailable. Fix in progress."
                 )
         
-        return OrderResponse.model_validate(result)
+        return [OrderResponse.model_validate(order_valid) for order_valid in result]
 
     def search_order(self):
         ...
