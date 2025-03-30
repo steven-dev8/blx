@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from typing import List
 from src.infra.sqlalchemy.repository.order_repository import ProcessOrder
-from src.schema.schemas import OrderCreate, OrderResponse
+from src.schema.schemas import OrderCreate, OrderResponse, OrderResponseSearch
 from src.infra.sqlalchemy.config.database import get_db
 
 
@@ -19,3 +19,11 @@ def create_order(order: OrderCreate, session: Session = Depends(get_db)):
 def list_order(session: Session = Depends(get_db)):
     result = ProcessOrder(session).list_order()
     return result
+
+
+@router.get('/order/{id_query}', status_code=status.HTTP_200_OK, response_model=OrderResponseSearch)
+def search_order(id_query: int, session: Session = Depends(get_db)):
+    result = ProcessOrder(session).search_order(id_query)
+    return result
+
+

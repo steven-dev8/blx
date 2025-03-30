@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from src.infra.sqlalchemy.models import models
-from src.schema.schemas import OrderBase, OrderCreate, OrderResponse
+from src.schema.schemas import OrderBase, OrderResponseSearch, OrderCreate, OrderResponse
 import src.infra.validators.order_validators as validator
 
 class ProcessOrder:
@@ -55,7 +55,7 @@ class ProcessOrder:
                 detail=f"The order with ID {id_order} was not found."
             )
 
-        return query
+        return OrderResponseSearch.model_validate(query)
     
     def delete_order(self, id_order: int):
         query = self.session.query(models.Order).filter(models.Order.id == id_order).first()
