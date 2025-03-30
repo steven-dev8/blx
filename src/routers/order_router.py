@@ -34,6 +34,6 @@ def delete_order(id_order: int, session: Session = Depends(get_db)):
 
 
 @router.patch('/order/{id_order}', status_code=status.HTTP_204_NO_CONTENT)
-def change_status(id_order: int, status: bool = False, session: Session = Depend(get_db)):
+def change_status(id_order: int, status: bool = False, session: Session = Depends(get_db)):
     result = ProcessOrder(session).change_status(id_order, status)
     return result
