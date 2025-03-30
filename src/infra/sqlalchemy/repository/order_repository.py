@@ -8,7 +8,6 @@ class ProcessOrder:
     def __init__(self, session: Session):
         self.session = session
     
-
     def create_order(self, order: OrderCreate):
         user = self.session.query(models.User.id).filter(models.User.id == order.client_id).first()
         if not user:
@@ -25,7 +24,11 @@ class ProcessOrder:
             )
             
         if validator.additional_check(order, product.quantity):
-            product.quantity = product.quantity - order.quantity
+            quantity = product.quantity - order.quantity
+            product.quantity = quantity
+
+            if quantity == 0:
+                product.avaliable = False
 
         new_order = models.Order(**order.dict())
         
@@ -61,8 +64,18 @@ class ProcessOrder:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f'The order with ID {id_order} was not found.'
             )
-        
+
+        self.session.commit()
         return None
     
-    def change_status(self):
-        ...
+    def change_status(self, id_order: int, status: bool):
+        query = self.session.query(models.Order).filter(models.Order.id == id_order).first()
+        if not query:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f'The order with ID {id_order} was not found.'
+            )
+        
+        query.status = status
+        self.session.commit()
+        return None
