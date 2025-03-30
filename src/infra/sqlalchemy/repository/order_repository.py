@@ -44,10 +44,17 @@ class ProcessOrder:
         
         return [OrderResponse.model_validate(order_valid) for order_valid in result]
 
-    def search_order(self):
-        ...
+    def search_order(self, id_order: int):
+        query = self.sessin.query(models.Order).filter(models.Order.id == id_order).first()
+        if not query:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"The order with ID {id_order} was not found."
+            )
+
+        return query
     
-    def delete_order(self):
+    def delete_order(self, id_order: int):
         ...
     
     def change_status(self):
