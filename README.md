@@ -15,4 +15,5 @@ This is a backend API built with FastAPI, SQLAlchemy, and Alembic, utilizing JWT
 - Python 3.10+
 - PostgreSQL (or another compatible relational database)
 
+
 in development...
