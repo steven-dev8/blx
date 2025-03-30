@@ -27,3 +27,8 @@ def search_order(id_query: int, session: Session = Depends(get_db)):
     return result
 
 
+@router.delete('/order/{id_query}', status_code=status.HTTP_204_NO_CONTENT)
+def delete_order(id_query: int, session: Session = Depends(get_db)):
+    result = ProcessOrder(session).delete_order(id_query)
+    return result
+
