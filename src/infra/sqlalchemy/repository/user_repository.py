@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from typing import List
-from src.schema.schemas import UserResponse, UserEdit, UserProduct, UserBase, UserCreate
+from src.schema.schemas import UserResponse, UserEdit, UserProduct, UserBase, UserCreate, OrderUserSearch
 from src.infra.sqlalchemy.models import models
 from src.infra.validators.user_validators import *
 from sqlalchemy.exc import IntegrityError
@@ -94,6 +94,20 @@ class ProcessUser:
                                         products=products_query
                                         )
         return formatted_response
+
+    def user_order(self, id_user: int):
+        order_query = self.session.query(models.Order).join(
+                                                            models.Product,
+                                                            models.Product.id == models.Order.product_id
+                                                            ).filter(models.Product.user_id == id_user).all()
+        
+        if not order_query:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Orders not fould"
+            )
+
+        return [OrderUserSearch.model_validate(order) for order in order_query]
 
     def edit_user(self, id_user: int, user: UserEdit):
         user_query = self.session.query(models.User).filter(models.User.id == id_user).first()

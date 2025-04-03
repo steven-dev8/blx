@@ -43,3 +43,9 @@ def search_user_product(id_user: int, session: Session = Depends(get_db)):
 def edit_user(id_user: int, user: UserEdit, session: Session = Depends(get_db)):
     result = ProcessUser(session).edit_user(id_user, user)
     return result
+
+
+@router.get('/user/{id_query}/orders')
+def list_orders(id_query: int, session: Session = Depends(get_db)):
+    result = ProcessUser(session).user_order(id_query)
+    return result

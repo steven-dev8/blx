@@ -88,3 +88,6 @@ class OrderResponseSearch(OrderCreate):
 
     class Config:
         from_attributes=True
+
+class OrderUserSearch(OrderResponseSearch):
+    pass
