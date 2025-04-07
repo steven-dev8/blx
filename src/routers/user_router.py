@@ -9,12 +9,6 @@ from typing import List, Union
 router = APIRouter()
 
 
-@router.post('/user', status_code=status.HTTP_201_CREATED, response_model=UserResponse)
-def signup_user(user: UserCreate, session: Session = Depends(get_db)):
-    user_db = ProcessUser(session).create(user)
-    return user_db
-
-
 @router.get('/user', status_code=status.HTTP_200_OK, response_model=List[UserResponse])
 def to_list_users(session: Session = Depends(get_db)):
     list_user = ProcessUser(session).to_list()
