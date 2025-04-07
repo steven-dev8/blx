@@ -4,6 +4,7 @@ from typing import List
 from src.schema.schemas import UserResponse, UserEdit, UserProduct, UserBase, UserCreate, OrderUserSearch
 from src.infra.sqlalchemy.models import models
 from src.infra.validators.user_validators import *
+from src.infra.providers import hash_provider
 from sqlalchemy.exc import IntegrityError
 
 class ProcessUser:
@@ -18,6 +19,7 @@ class ProcessUser:
                 )
 
         try:
+            user.password = hash_provider.generate_hash(user.password)
             add_user = models.User(
                                 name=user.name,
                                 login=user.login,
@@ -43,7 +45,7 @@ class ProcessUser:
                                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
                                 detail="Temporarily unavailable. Fix in progress."
                                 )
-
+        
         format_user = [UserResponse.model_validate(user) for user in user_list]
         return format_user
 
