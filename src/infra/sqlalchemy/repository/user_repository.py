@@ -1,11 +1,12 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
-from typing import List
-from src.schema.schemas import UserResponse, UserEdit, UserProduct, UserBase, UserCreate, OrderUserSearch
+from src.schema.schemas import UserResponse, UserEdit, UserProduct, UserCreate, OrderUserSearch, UserLogin
 from src.infra.sqlalchemy.models import models
 from src.infra.validators.user_validators import *
 from src.infra.providers import hash_provider
 from sqlalchemy.exc import IntegrityError
+from src.infra.providers import hash_provider
+
 
 class ProcessUser:
     def __init__(self, session: Session):
@@ -133,3 +134,25 @@ class ProcessUser:
         self.session.commit()
         return None
     
+    def login_token(self, user: UserLogin):
+        login = user.login
+        password = user.password
+        query = self.session.query(models.User).filter(
+                                                       models.User.login == login
+                                                       ).first()
+        
+        if not query:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="No user found with that login"
+                )
+
+        verify_password = hash_provider.verify_hash(password, query.password)
+
+        if not verify_password:
+            raise HTTPException(
+                                status_code=status.HTTP_400_BAD_REQUEST,
+                                detail="Password is incorrect"
+                                ) 
+        
+        # JWT WILL BE ADDED
