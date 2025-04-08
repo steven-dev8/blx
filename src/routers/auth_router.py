@@ -17,4 +17,4 @@ def signup_user(user: UserCreate, session: Session = Depends(get_db)):
 @router.post('/token')
 def sigin_user(user: UserLogin, session: Session = Depends(get_db)):
     token = ProcessUser(session).login_token(user)
-    
+    return token

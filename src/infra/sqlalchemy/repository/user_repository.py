@@ -5,7 +5,7 @@ from src.infra.sqlalchemy.models import models
 from src.infra.validators.user_validators import *
 from src.infra.providers import hash_provider
 from sqlalchemy.exc import IntegrityError
-from src.infra.providers import hash_provider
+from src.infra.providers import hash_provider, token_provider
 
 
 class ProcessUser:
@@ -155,4 +155,5 @@ class ProcessUser:
                                 detail="Password is incorrect"
                                 ) 
         
-        # JWT WILL BE ADDED
+        token = token_provider.create_access_token({'sub': query.login})
+        return {'usuario': query, 'access_token': token}
