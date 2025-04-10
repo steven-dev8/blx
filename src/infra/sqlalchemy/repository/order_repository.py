@@ -8,15 +8,11 @@ class ProcessOrder:
     def __init__(self, session: Session):
         self.session = session
     
-    def create_order(self, order: OrderCreate):
-        user = self.session.query(models.User.id).filter(models.User.id == order.client_id).first()
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"The user with ID {order.client_id} was not found."
-                )
-        
-        product = self.session.query(models.Product).filter(models.Product.id == order.product_id).scalar()
+    def create_order(self, order: OrderCreate, user_id: int):
+        product = self.session.query(models.Product).filter(
+                                models.Product.id == order.product_id
+                                ).scalar()
+
         if not product:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -30,7 +26,8 @@ class ProcessOrder:
             if quantity == 0:
                 product.avaliable = False
 
-        new_order = models.Order(**order.dict())
+        new_order = models.Order(**order.model_dump())
+        new_order.client_id = user_id
         
         self.session.add(new_order)
         self.session.commit()

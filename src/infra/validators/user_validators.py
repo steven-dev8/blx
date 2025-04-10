@@ -1,4 +1,4 @@
-from src.schema.schemas import UserCreate
+from src.schema.schemas import UserCreate, UserEdit
 
 
 def validate_password(password: str):
@@ -25,3 +25,12 @@ def validate_create(user: UserCreate):
     number = validate_number(user.number)
 
     return name and login and password and number
+
+
+def validate_edit(user: UserEdit):
+    return all([
+        not user.name or validate_name(user.name),
+        not user.login or validate_login(user.login),
+        not user.password or validate_password(user.password),
+        not user.number or validate_number(user.number)
+    ])
