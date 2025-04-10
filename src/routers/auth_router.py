@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from src.infra.sqlalchemy.repository.user_repository import ProcessUser
-from src.schema.schemas import UserResponse, UserCreate, UserLogin
+from src.schema.schemas import UserResponse, UserCreate, UserLogin, UserLoginOut
 from src.infra.sqlalchemy.config.database import get_db
-from typing import List, Union
+from src.routers.auth_utils import get_registered_user
 
 
 router = APIRouter()
+
 
 @router.post('/user', status_code=status.HTTP_201_CREATED, response_model=UserResponse)
 def signup_user(user: UserCreate, session: Session = Depends(get_db)):
@@ -18,3 +19,8 @@ def signup_user(user: UserCreate, session: Session = Depends(get_db)):
 def sigin_user(user: UserLogin, session: Session = Depends(get_db)):
     token = ProcessUser(session).login_token(user)
     return token
+
+
+@router.get('/me', response_model=UserLoginOut)
+def me(user: UserLoginOut = Depends(get_registered_user)):
+    return user
