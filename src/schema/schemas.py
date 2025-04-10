@@ -12,14 +12,22 @@ class UserLogin(BaseModel):
     password: str
 
 
+class UserLoginOut(UserBase):
+    id: int
+    number: str
+
+
 class UserCreate(UserBase):
     login: str
     password: str
     number: str
 
 
-class UserEdit(UserCreate):
-    pass
+class UserEdit(BaseModel):
+    name: Optional[str] = None
+    login: Optional[str] = None
+    password: Optional[str] = None
+    number: Optional[str] = None
 
 
 class UserResponse(UserBase):
@@ -76,7 +84,6 @@ class OrderBase(BaseModel):
 
 
 class OrderCreate(OrderBase):
-    client_id: int
     product_id: int
 
     class Config:
