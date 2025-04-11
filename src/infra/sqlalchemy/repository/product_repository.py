@@ -10,14 +10,14 @@ class ProcessProduct:
     def __init__(self, session: Session):
         self.session = session
     
-    def create(self, product: ProductCreate):
+    def create(self, product: ProductCreate, user_id: int):
         if not create_product(product):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="The provided user data is invalid. Please check the input fields."
                 )
         
-        user_query = self.session.query(models.User.id).filter(models.User.id == product.user_id).first()
+        user_query = self.session.query(models.User.id).filter(models.User.id == user_id).first()
 
         if not user_query:
             raise HTTPException(
@@ -25,13 +25,8 @@ class ProcessProduct:
                 detail=f"The user with ID {product.user_id} was not found."
                 )
 
-        db_product = models.Product(
-                                    name=product.name,
-                                    user_id=product.user_id,
-                                    description=product.description,
-                                    price=product.price,
-                                    quantity=product.quantity,
-                                    )
+        db_product = models.Product(**product.model_dump())
+        db_product.user_id = user_id
         
         if avaliable_product(db_product.quantity):
             db_product.avaliable=True

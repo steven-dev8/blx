@@ -55,7 +55,7 @@ class ProductBase(BaseModel):
 
 
 class ProductCreate(ProductBase):
-    user_id: int
+    ...
 
 
 class ProductResponse(ProductBase):
