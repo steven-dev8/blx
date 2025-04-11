@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from typing import List
 from src.infra.sqlalchemy.repository.product_repository import ProcessProduct
-from src.schema.schemas import ProductBase, ProductCreate, ProductEdit, ProductResponse, ProductList, ProductAll
+from src.schema.schemas import ProductCreate, ProductEdit, ProductResponse, ProductList, ProductAll, UserLoginOut
+from src.routers.auth_utils import get_registered_user
 from src.infra.sqlalchemy.config.database import get_db
 
 
@@ -10,8 +11,10 @@ router = APIRouter()
 
 
 @router.post('/product', status_code=status.HTTP_201_CREATED, response_model=ProductResponse)
-def add_product(product: ProductCreate, session: Session = Depends(get_db)):
-    prd_db = ProcessProduct(session).create(product)
+def add_product(product: ProductCreate,
+                user: UserLoginOut = Depends(get_registered_user),
+                session: Session = Depends(get_db)):
+    prd_db = ProcessProduct(session).create(product, user.id)
     return prd_db
 
 
