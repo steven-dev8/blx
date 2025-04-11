@@ -42,6 +42,9 @@ def edit_product(id_prod: int,
 
 
 @router.delete('/product/{id_prd}', status_code=status.HTTP_204_NO_CONTENT)
-def del_product(id_prd: int, session: Session = Depends(get_db)):
-    result = ProcessProduct(session).delete_product(id_prd)
+def del_product(id_prd: int,
+                user: UserLoginOut = Depends(get_registered_user),
+                session: Session = Depends(get_db)):
+    
+    result = ProcessProduct(session).delete_product(id_prd, user.id)
     return result

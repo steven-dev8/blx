@@ -1,17 +1,16 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
-from src.schema.schemas import ProductBase, ProductCreate, ProductEdit, ProductResponse, ProductList, ProductAll
+from src.schema.schemas import ProductCreate, ProductEdit, ProductResponse, ProductList, ProductAll
 from src.infra.sqlalchemy.models import models
-from src.infra.validators.product_validators import *
-from src.infra.validators.product_validators import create_product as update_product
+from src.infra.validators.product_validators import validate_product_data, avaliable_product, quantity_product
 
 
 class ProcessProduct:
     def __init__(self, session: Session):
         self.session = session
     
-    def create(self, product: ProductCreate, user_id: int):
-        if not create_product(product):
+    def create(self, product: ProductCreate, user_id: int) -> ProductResponse:
+        if not validate_product_data(product):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="The provided user data is invalid. Please check the input fields."
@@ -64,12 +63,18 @@ class ProcessProduct:
 
         return ProductAll.model_validate(result)
 
-    def delete_product(self, id_prd: int):
-        query = self.session.query(models.Product).filter(models.Product.id == id_prd).first()
+    def delete_product(self, id_prd: int, user_id: int):
+        query = (
+                self.session.query(models.Product)
+                .filter(models.Product.user_id == user_id,
+                        models.Product.id == id_prd)
+                .first()
+                )
+        
         if not query:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"The product with ID {id_prd} was not found."
+                detail=f"Product not found"
                 )
 
         self.session.delete(query)
@@ -89,7 +94,7 @@ class ProcessProduct:
                 detail=f"Product not found."
             )
         
-        if not update_product(product):
+        if not validate_product_data(product):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"The provided user data is invalid. Please check the input fields."

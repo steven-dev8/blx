@@ -21,7 +21,7 @@ def check_price(price: float):
     return price >= 0
 
 
-def create_product(product: ProductCreate):
+def validate_product_data(product: ProductCreate):
     return all([
         product.name is None or length_name(product.name),
         product.quantity is None or quantity_product(product.quantity),
