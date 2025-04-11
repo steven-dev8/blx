@@ -32,10 +32,13 @@ def query_product(id_query: int,
     return result
 
 
-@router.put('/product/{id_prod}', status_code=status.HTTP_204_NO_CONTENT)
-def edit_product(id_prod: int, product: ProductEdit, session: Session = Depends(get_db)):
-    result = ProcessProduct(session).edit_product(id_prod, product)
-    return result
+@router.patch('/product/{id_prod}', status_code=status.HTTP_204_NO_CONTENT)
+def edit_product(id_prod: int,
+                 product: ProductEdit,
+                 user: UserLoginOut = Depends(get_registered_user),
+                 session: Session = Depends(get_db)):
+    ProcessProduct(session).edit_product(product, id_prod, user.id)
+    return None
 
 
 @router.delete('/product/{id_prd}', status_code=status.HTTP_204_NO_CONTENT)
