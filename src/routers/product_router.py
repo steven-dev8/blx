@@ -19,14 +19,17 @@ def add_product(product: ProductCreate,
 
 
 @router.get('/product', status_code=status.HTTP_200_OK, response_model=List[ProductList])
-def to_list_prds(session: Session = Depends(get_db)):
-    list_prd = ProcessProduct(session).to_list()
+def list_products(user: UserLoginOut = Depends(get_registered_user),
+                 session: Session = Depends(get_db)):
+    list_prd = ProcessProduct(session).list_user_product(user.id)
     return list_prd
 
 
 @router.get('/product/{id_query}', status_code=status.HTTP_200_OK, response_model=ProductAll)
-def query_product(id_query: int, session: Session = Depends(get_db)):
-    result = ProcessProduct(session).search(id_query)
+def query_product(id_query: int,
+                  user: UserLoginOut = Depends(get_registered_user),
+                  session: Session = Depends(get_db)):
+    result = ProcessProduct(session).search(id_query, user.id)
     return result
 
 

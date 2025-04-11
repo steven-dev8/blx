@@ -17,7 +17,11 @@ class ProcessProduct:
                 detail="The provided user data is invalid. Please check the input fields."
                 )
         
-        user_query = self.session.query(models.User.id).filter(models.User.id == user_id).first()
+        user_query = (
+                      self.session.query(models.User.id)
+                      .filter(models.User.id == user_id)
+                      .first()
+                      )
 
         if not user_query:
             raise HTTPException(
@@ -36,22 +40,26 @@ class ProcessProduct:
         self.session.refresh(db_product)
         return ProductResponse.model_validate(db_product)
      
-    def to_list(self):
-        products = self.session.query(models.Product).all()
-        if not products:
-            raise HTTPException(
-                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail="Service is unavailable. Fix in progress."
-                )
-
+    def list_user_product(self, user_id: int) -> list[ProductList]:
+        products = (
+                    self.session.query(models.Product)
+                    .filter(models.Product.user_id == user_id)
+                    .all()
+                    )
+        
         return [ProductList.model_validate(product) for product in products]
 
-    def search(self, id_query: int):
-        result = self.session.query(models.Product).filter(models.Product.id == id_query).first()
+    def search(self, id_query: int, user_id: int) -> ProductAll:
+        result = (
+                  self.session.query(models.Product)
+                  .filter(models.Product.id == id_query, models.Product.user_id == user_id)
+                  .first()
+                  )
+        
         if not result:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"The product with ID {id_query} was not found."
+                detail=f"Product not found."
                 )
 
         return ProductAll.model_validate(result)
@@ -61,7 +69,7 @@ class ProcessProduct:
         if not query:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"The product with ID {id_query} was not found."
+                detail=f"The product with ID {id_prd} was not found."
                 )
 
         self.session.delete(query)
