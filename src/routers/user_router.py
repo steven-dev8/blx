@@ -22,13 +22,6 @@ def del_user(user: UserLoginOut = Depends(get_registered_user),
     ProcessUser(session).delete_user(user.id)
 
 
-@router.get('/user/products', status_code=status.HTTP_200_OK, response_model=UserProduct)
-def search_user_product(user: UserLoginOut = Depends(get_registered_user),
-                        session: Session = Depends(get_db)):
-    result = ProcessUser(session).user_product(user.id) 
-    return result
-
-
 @router.put('/user', status_code=status.HTTP_204_NO_CONTENT)
 def edit_user(user_edit: UserEdit,
               user: UserLoginOut = Depends(get_registered_user),

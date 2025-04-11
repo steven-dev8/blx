@@ -45,6 +45,5 @@ def edit_product(id_prod: int,
 def del_product(id_prd: int,
                 user: UserLoginOut = Depends(get_registered_user),
                 session: Session = Depends(get_db)):
-    
-    result = ProcessProduct(session).delete_product(id_prd, user.id)
-    return result
+    ProcessProduct(session).delete_product(id_prd, user.id)
+    return None

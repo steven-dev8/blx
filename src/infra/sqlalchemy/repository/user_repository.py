@@ -63,23 +63,6 @@ class ProcessUser:
     
         return None
 
-    def user_product(self, id_user: int):
-        products_query = self.session.query(models.Product).filter(models.Product.user_id == id_user).all()
-        user_query = self.session.query(models.User.id, models.User.name).filter(models.User.id == id_user).first()
-
-        if not user_query:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"The user with ID {id_user} was not found."
-                )
-
-        formatted_response = UserProduct(
-                                        id=user_query[0],
-                                        name=user_query[1],
-                                        products=products_query
-                                        )
-        return formatted_response
-
     def user_order(self, id_user: int):
         order_query = self.session.query(models.Order).join(
                                                             models.Product,
