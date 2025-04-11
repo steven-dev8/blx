@@ -54,6 +54,13 @@ class ProductBase(BaseModel):
     quantity: int
 
 
+class ProductEdit(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[float] = None
+    quantity: Optional[int] = None
+
+
 class ProductCreate(ProductBase):
     ...
 
@@ -68,10 +75,8 @@ class ProductResponse(ProductBase):
 class ProductList(ProductResponse):
     id: int
 
-class ProductAll(ProductResponse, ProductCreate):
-    pass
 
-class ProductEdit(ProductBase):
+class ProductAll(ProductResponse, ProductCreate):
     pass
 
 
