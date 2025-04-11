@@ -22,9 +22,9 @@ def check_price(price: float):
 
 
 def create_product(product: ProductCreate):
-    name = length_name(product.name)
-    quantity = quantity_product(product.quantity)
-    description = length_description(product.description)
-    price = check_price(product.price)
-
-    return name and quantity and description and price
+    return all([
+        product.name is None or length_name(product.name),
+        product.quantity is None or quantity_product(product.quantity),
+        product.description is None or length_description(product.description),
+        product.price is None or check_price(product.price)
+    ])

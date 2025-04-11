@@ -74,30 +74,37 @@ class ProcessProduct:
 
         self.session.delete(query)
         self.session.commit()
-        return None
     
-    def edit_product(self, id_user: int, product: ProductEdit):
+    def edit_product(self, product: ProductEdit, prd_id: int, user_id: int):
+        existing_product = (
+                self.session.query(models.Product)
+                .filter(models.Product.user_id == user_id,
+                        models.Product.id == prd_id)
+                .first()
+                )
+        
+        if not existing_product:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Product not found."
+            )
+        
         if not update_product(product):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"The product with ID {id_user} was not found."
+                detail=f"The provided user data is invalid. Please check the input fields."
             )
 
-        query = self.session.query(models.Product).filter(models.Product.id == id_user).first()
-        
-        if not query:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"The product with ID {id_user} was not found."
-            )
+        if product.name is not None:
+            existing_product.name = product.name
+        if product.description is not None:
+            existing_product.description = product.description
+        if product.price is not None:
+            existing_product.price = product.price
+        if product.quantity is not None:
+            existing_product.quantity = product.quantity
 
-        query.name = product.name
-        query.description = product.description
-        query.price = product.price
-        query.quantity = product.quantity
-        if quantity_product(query.quantity):
-            query.avaliable = True
+        existing_product.avaliable = quantity_product(existing_product.quantity)
 
         self.session.commit()
-        self.session.refresh(query)
-        return None
+
