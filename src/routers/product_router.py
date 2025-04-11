@@ -27,9 +27,8 @@ def list_products(user: UserLoginOut = Depends(get_registered_user),
 
 @router.get('/product/{id_query}', status_code=status.HTTP_200_OK, response_model=ProductAll)
 def query_product(id_query: int,
-                  user: UserLoginOut = Depends(get_registered_user),
                   session: Session = Depends(get_db)):
-    result = ProcessProduct(session).search(id_query, user.id)
+    result = ProcessProduct(session).search(id_query)
     return result
 
 

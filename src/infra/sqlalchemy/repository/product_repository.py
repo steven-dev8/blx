@@ -49,10 +49,10 @@ class ProcessProduct:
         
         return [ProductList.model_validate(product) for product in products]
 
-    def search(self, id_query: int, user_id: int) -> ProductAll:
+    def search(self, id_query: int) -> ProductAll:
         result = (
                   self.session.query(models.Product)
-                  .filter(models.Product.id == id_query, models.Product.user_id == user_id)
+                  .filter(models.Product.id == id_query)
                   .first()
                   )
         
