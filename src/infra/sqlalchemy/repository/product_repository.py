@@ -32,7 +32,7 @@ class ProcessProduct:
         db_product.user_id = user_id
         
         if avaliable_product(db_product.quantity):
-            db_product.avaliable=True
+            db_product.available=True
 
         self.session.add(db_product)
         self.session.commit()
@@ -45,7 +45,7 @@ class ProcessProduct:
                     .filter(models.Product.user_id == user_id)
                     .all()
                     )
-        
+
         return [ProductList.model_validate(product) for product in products]
 
     def search(self, id_query: int) -> ProductAll:
@@ -109,7 +109,7 @@ class ProcessProduct:
         if product.quantity is not None:
             existing_product.quantity = product.quantity
 
-        existing_product.avaliable = quantity_product(existing_product.quantity)
+        existing_product.available = quantity_product(existing_product.quantity)
 
         self.session.commit()
 

@@ -6,7 +6,9 @@ from src.infra.providers import token_provider
 from src.infra.sqlalchemy.repository.user_repository import ProcessUser
 from jwt import PyJWTError
 
+
 oauth2_schema = OAuth2PasswordBearer(tokenUrl='token')
+
 
 def get_registered_user(token: str = Depends(oauth2_schema),
                         session: Session = Depends(get_db)):
