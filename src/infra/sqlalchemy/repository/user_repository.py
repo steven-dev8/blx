@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
-from src.schema.schemas import UserResponse, UserEdit, UserProduct, UserCreate, OrderUserSearch, UserLogin
+from src.schema.schemas import UserResponse, UserEdit, UserCreate, OrderUserSearch, UserLogin
 from src.infra.sqlalchemy.models import models
 from src.infra.validators.user_validators import *
 from src.infra.providers import hash_provider, token_provider
