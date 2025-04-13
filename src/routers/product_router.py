@@ -14,21 +14,21 @@ router = APIRouter()
 def add_product(product: ProductCreate,
                 user: UserLoginOut = Depends(get_registered_user),
                 session: Session = Depends(get_db)):
-    prd_db = ProcessProduct(session).create(product, user.id)
-    return prd_db
+    product_add = ProcessProduct(session).create(product, user.id)
+    return product_add
 
 
 @router.get('/product', status_code=status.HTTP_200_OK, response_model=List[ProductList])
 def list_products(user: UserLoginOut = Depends(get_registered_user),
                  session: Session = Depends(get_db)):
-    list_prd = ProcessProduct(session).list_user_product(user.id)
-    return list_prd
+    list_product = ProcessProduct(session).list_user_product(user.id)
+    return list_product
 
 
-@router.get('/product/{id_query}', status_code=status.HTTP_200_OK, response_model=ProductAll)
-def query_product(id_query: int,
+@router.get('/product/{id_prod}', status_code=status.HTTP_200_OK, response_model=ProductAll)
+def query_product(id_prod: int,
                   session: Session = Depends(get_db)):
-    result = ProcessProduct(session).search(id_query)
+    result = ProcessProduct(session).search(id_prod)
     return result
 
 
@@ -38,12 +38,10 @@ def edit_product(id_prod: int,
                  user: UserLoginOut = Depends(get_registered_user),
                  session: Session = Depends(get_db)):
     ProcessProduct(session).edit_product(product, id_prod, user.id)
-    return None
 
 
-@router.delete('/product/{id_prd}', status_code=status.HTTP_204_NO_CONTENT)
-def del_product(id_prd: int,
+@router.delete('/product/{id_prod}', status_code=status.HTTP_204_NO_CONTENT)
+def del_product(id_prod: int,
                 user: UserLoginOut = Depends(get_registered_user),
                 session: Session = Depends(get_db)):
-    ProcessProduct(session).delete_product(id_prd, user.id)
-    return None
+    ProcessProduct(session).delete_product(id_prod, user.id)
