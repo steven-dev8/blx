@@ -29,7 +29,7 @@ class Product(Base):
     description = Column(Text, default='No description')
     price = Column(Numeric, nullable=False)
     quantity = Column(SmallInteger, default=0)
-    avaliable = Column(Boolean, default=False)
+    available = Column(Boolean, default=False)
 
     user = relationship('User', back_populates='products')
     order = relationship('Order', back_populates='parent_product')
@@ -39,8 +39,8 @@ class Order(Base):
     __tablename__ = 'order'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    client_id = Column(Integer, ForeignKey('user.id', name='fk_client_order'), nullable=False)
-    product_id = Column(Integer, ForeignKey('product.id', name='fk_product_order'), nullable=False)
+    client_id = Column(Integer, ForeignKey('user.id', name='fk_client_order'))
+    product_id = Column(Integer, ForeignKey('product.id', name='fk_product_order'))
     quantity = Column(SmallInteger, CheckConstraint('quantity > 0'), nullable=False)
     status = Column(Boolean, default=False)
     address = Column(String(100), nullable=False)
