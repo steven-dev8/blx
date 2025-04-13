@@ -10,12 +10,6 @@ from src.routers.auth_utils import get_registered_user
 router = APIRouter()
 
 
-@router.get('/user/list', status_code=status.HTTP_200_OK, response_model=List[UserResponse])
-def to_list_users(session: Session = Depends(get_db)):
-    list_user = ProcessUser(session).to_list()
-    return list_user
-
-
 @router.delete('/user', status_code=status.HTTP_204_NO_CONTENT)
 def del_user(user: UserLoginOut = Depends(get_registered_user),
              session: Session = Depends(get_db)):
