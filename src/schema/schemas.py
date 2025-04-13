@@ -1,4 +1,4 @@
-from typing import Optional, List, Union
+from typing import Optional, List
 from pydantic import BaseModel
 
 
@@ -66,7 +66,7 @@ class ProductCreate(ProductBase):
 
 
 class ProductResponse(ProductBase):
-    avaliable: bool
+    available: bool
 
     class Config:
         from_attributes=True
@@ -94,17 +94,12 @@ class OrderCreate(OrderBase):
     class Config:
         from_attributes=True
 
-class OrderResponse(OrderCreate):
+class OrderResponse(OrderBase):
+    product_id: Optional[int]
     id: int
 
     class Config:
         from_attributes=True
 
-class OrderResponseSearch(OrderCreate):
-    id: int
-
-    class Config:
-        from_attributes=True
-
-class OrderUserSearch(OrderResponseSearch):
+class OrderUserSearch(OrderResponse):
     pass
