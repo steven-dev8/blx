@@ -1,11 +1,13 @@
 from datetime import datetime, timedelta, timezone
+from dotenv import load_dotenv
 import jwt
+import os
 
+load_dotenv()
 
-SECRET_KEY = "SECRET_KEY_HERE"
-ALGORITHM = "HS256"
-EXPIRES_IN_MINUTE = 300
-
+SECRET_KEY = os.getenv("SECRET_KEY")
+EXPIRES_IN_MINUTE = int(os.getenv("EXPIRES_IN_MINUTE", "15"))
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
 
 def create_access_token(data: dict):
     content_data = data.copy()
