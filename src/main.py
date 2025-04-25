@@ -9,7 +9,11 @@ from src.routers.auth_router import router as auth_router
 
 create_session_db()
 
-app = FastAPI()
+app = FastAPI(
+    title="BLX MARKETPLACE",
+    description="RESTful API for marketplace management.",
+    version="1.0 BETA"
+)
 
 origins = ["http://localhost",
            "http://localhost:8080",

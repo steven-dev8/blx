@@ -10,7 +10,7 @@ from src.infra.sqlalchemy.config.database import get_db
 router = APIRouter()
 
 
-@router.post('/product', status_code=status.HTTP_201_CREATED, response_model=ProductResponse)
+@router.post('/product', status_code=status.HTTP_201_CREATED, response_model=ProductResponse, tags=["Products"])
 def add_product(product: ProductCreate,
                 user: UserLoginOut = Depends(get_registered_user),
                 session: Session = Depends(get_db)):
@@ -18,21 +18,21 @@ def add_product(product: ProductCreate,
     return product_add
 
 
-@router.get('/product', status_code=status.HTTP_200_OK, response_model=List[ProductList])
+@router.get('/product', status_code=status.HTTP_200_OK, response_model=List[ProductList], tags=["Products"])
 def list_products(user: UserLoginOut = Depends(get_registered_user),
                  session: Session = Depends(get_db)):
     list_product = ProcessProduct(session).list_user_product(user.id)
     return list_product
 
 
-@router.get('/product/{id_prod}', status_code=status.HTTP_200_OK, response_model=ProductAll)
+@router.get('/product/{id_prod}', status_code=status.HTTP_200_OK, response_model=ProductAll, tags=["Products"])
 def query_product(id_prod: int,
                   session: Session = Depends(get_db)):
     result = ProcessProduct(session).search(id_prod)
     return result
 
 
-@router.patch('/product/{id_prod}', status_code=status.HTTP_204_NO_CONTENT)
+@router.patch('/product/{id_prod}', status_code=status.HTTP_204_NO_CONTENT, tags=["Products"])
 def edit_product(id_prod: int,
                  product: ProductEdit,
                  user: UserLoginOut = Depends(get_registered_user),
@@ -40,7 +40,7 @@ def edit_product(id_prod: int,
     ProcessProduct(session).edit_product(product, id_prod, user.id)
 
 
-@router.delete('/product/{id_prod}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/product/{id_prod}', status_code=status.HTTP_204_NO_CONTENT, tags=["Products"])
 def del_product(id_prod: int,
                 user: UserLoginOut = Depends(get_registered_user),
                 session: Session = Depends(get_db)):

@@ -10,7 +10,7 @@ from src.infra.sqlalchemy.config.database import get_db
 router = APIRouter()
 
 
-@router.post('/order', status_code=status.HTTP_201_CREATED)
+@router.post('/order', status_code=status.HTTP_201_CREATED, tags=["Orders"])
 def create_client_order(order: OrderCreate,
                  user: UserLoginOut = Depends(get_registered_user),
                  session: Session = Depends(get_db)):
@@ -18,14 +18,14 @@ def create_client_order(order: OrderCreate,
     return result
 
 
-@router.get('/order/client', status_code=status.HTTP_200_OK, response_model=List[OrderResponse])
+@router.get('/order/client', status_code=status.HTTP_200_OK, response_model=List[OrderResponse], tags=["Orders"])
 def list_client_orders(user: UserLoginOut = Depends(get_registered_user),
                session: Session = Depends(get_db)):
     result = ProcessOrder(session).list_user_order(user.id)
     return result
 
 
-@router.get('/order/client/{id_order}', status_code=status.HTTP_200_OK, response_model=OrderResponse)
+@router.get('/order/client/{id_order}', status_code=status.HTTP_200_OK, response_model=OrderResponse, tags=["Orders"])
 def search_client_order(id_order: int,
                  user: UserLoginOut = Depends(get_registered_user),
                  session: Session = Depends(get_db)):
@@ -33,14 +33,14 @@ def search_client_order(id_order: int,
     return result
 
 
-@router.delete('/order/client/{id_order}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/order/client/{id_order}', status_code=status.HTTP_204_NO_CONTENT, tags=["Orders"])
 def delete_client_order(id_order: int,
                  user: UserLoginOut = Depends(get_registered_user),
                  session: Session = Depends(get_db)):
     ProcessOrder(session).delete_order(id_order, user.id)
 
 
-@router.get('/order/vendor/{id_order}', status_code=status.HTTP_200_OK, response_model=OrderResponse)
+@router.get('/order/vendor/{id_order}', status_code=status.HTTP_200_OK, response_model=OrderResponse, tags=["Orders"])
 def search_vendor_orders(id_order: int,
                          user: UserLoginOut = Depends(get_registered_user),
                          session: Session = Depends(get_db)):
@@ -49,7 +49,7 @@ def search_vendor_orders(id_order: int,
 
 
 
-@router.patch('/order/{id_order}', status_code=status.HTTP_204_NO_CONTENT)
+@router.patch('/order/{id_order}', status_code=status.HTTP_204_NO_CONTENT, tags=["Orders"])
 def change_status(id_order: int,
                   status: bool = False,
                   user: UserLoginOut = Depends(get_registered_user),
