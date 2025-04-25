@@ -1,12 +1,15 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import psycopg2
 
+# import psycopg2
+# SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://user:password@localhost:5432/name_db"
 
-SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://postgres:2005@localhost:5432/marketplace"
+SQLITE_DATABASE_URL = "sqlite:///./marketplace.db"
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(
+    SQLITE_DATABASE_URL, connect_args={"check_same_thread": False}
+)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
