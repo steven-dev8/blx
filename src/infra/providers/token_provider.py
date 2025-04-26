@@ -1,9 +1,12 @@
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
+from pathlib import Path
 import jwt
 import os
 
-load_dotenv()
+dotenv_path = Path('.') / '.env'
+load_dotenv(dotenv_path=dotenv_path)
+
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 EXPIRES_IN_MINUTE = int(os.getenv("EXPIRES_IN_MINUTE", "15"))
